@@ -22,7 +22,7 @@ typedef struct {
  * @param A Número de arestas
  * @return Ponteiro para o grafo
  */
-Grafo* inicializaGrafo(int V, int A);
+Grafo* inicializaGrafo(int V);
 /**
  * @brief Insere aresta no grafo e incrementa o número de arestas
  * @param grafo Ponteiro para o grafo

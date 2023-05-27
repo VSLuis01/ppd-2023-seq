@@ -38,7 +38,7 @@ void deleteGrafo(Grafo* grafo) {
  * @param A Número de arestas
  * @return Ponteiro para o grafo
  */
-Grafo* inicializaGrafo(int V, int A) {
+Grafo* inicializaGrafo(int V) {
     Grafo* grafo = (Grafo*) malloc(sizeof(Grafo));
     grafo->V = V;
     grafo->A = 0;  // Iniciar o número de arestas como 0
