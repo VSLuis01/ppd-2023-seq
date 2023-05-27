@@ -4,54 +4,95 @@
 
 #include "sdl_utils.h"
 
-
-
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Event event;
 
-void sdlDestroyWindow() {
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
-int sdlQuit() {
-    return event.type == SDL_QUIT;
-}
-
-int sdlPullEvent() {
-    return SDL_PollEvent(&event);
-}
-
-void sdlRender() {
-    // Limpa o renderer
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-
-    // Atualiza a janela
-    SDL_RenderPresent(renderer);
-}
-
-int sdlInitWindow(int width, int height) {
+/**
+ * @brief Inicializa a janela do SDL (window e renderer)
+ * @param width comprimento da janela
+ * @param height altura da janela
+ */
+void sdlInitWindow(int width, int height) {
     // Inicialização do SDL
     SDL_Init(SDL_INIT_VIDEO);
 
     // Criação da janela
     window = SDL_CreateWindow("Exemplo SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
 }
 
-void renderizarCirculoPreenchido(int centroX, int centroY, int raio, Color color) {
-    int x, y, yAnterior;
+/**
+ * @brief Destrói a janela do SDL (renderer e window)
+ */
+void sdlDestroyWindow() {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
 
-    // Percorre cada linha horizontal do círculo
-    for (y = centroY - raio; y <= centroY + raio; y++) {
-        // Calcula as coordenadas x para a linha atual
-        x = centroX + sqrt(raio * raio - (y - centroY) * (y - centroY));
+/**
+ * @brief Verifica se o evento é de fechar a janela.
+ * @return
+ */
+int sdlEventClosedWindow() {
+    return event.type == SDL_QUIT;
+}
 
-        // Desenha a linha horizontal
-        SDL_RenderDrawLine(renderer, centroX - x, y, centroX + x, y);
+void sdlClearRender() {
+    // Limpa o renderer
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+}
+
+void sdlDraw() {
+    // Atualiza a janela
+    SDL_RenderPresent(renderer);
+}
+
+/**
+ * @brief Verifica se há eventos na fila do SDL
+ * @return 1 se há eventos, 0 caso contrário.
+ */
+int sdlPullEvent() {
+    return SDL_PollEvent(&event);
+}
+
+/**
+ * @brief Renderiza um círculo no renderer
+ * @param pos posicao do centro do círculo na janela
+ * @param raio raio do circulo
+ * @param color cor do circulo
+ */
+void sdlRenderizarCirculo(SDL_FPoint pos, int raio, SDL_Colour color) {
+    // Configura a cor do renderer
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+    int x, y;
+    for (y = -raio; y <= raio; y++) {
+        for (x = -raio; x <= raio; x++) {
+            // Verifica se o ponto está dentro do círculo
+            if (x * x + y * y <= raio * raio) {
+                // Desenha o ponto no renderer
+                SDL_RenderDrawPoint(renderer, pos.x + x, pos.y + y);
+            }
+        }
     }
 }
+
+/**
+ * @brief Renderiza uma linha no renderer
+ * @param p1 ponto inicial da linha (extremo 1)
+ * @param p2 ponto final da linha (extremo 2)
+ * @param color cor da linha
+ */
+void sdlRenderizarLinha(SDL_FPoint p1, SDL_FPoint p2, SDL_Colour color) {
+    // Configura a cor do renderer
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+
+    // Desenha a linha utilizando SDL_RenderDrawLine
+    SDL_RenderDrawLine(renderer, p1.x, p1.y, p2.x, p2.y);
+}
+
+

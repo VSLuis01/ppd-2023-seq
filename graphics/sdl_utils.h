@@ -8,23 +8,55 @@
 #include <SDL2/SDL.h>
 #include <math.h>
 
-typedef struct {
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-    Uint8 a;
-} Color;
 
-int sdlInitWindow(int width, int height);
+/**
+ * @brief Inicializa a janela do SDL (window e renderer)
+ * @param width comprimento da janela
+ * @param height altura da janela
+ */
+void sdlInitWindow(int width, int height);
 
+/**
+ * @brief Destrói a janela do SDL (renderer e window)
+ */
 void sdlDestroyWindow();
 
-int sdlQuit();
+/**
+ * @brief Verifica se o evento é de fechar a janela.
+ * @return
+ */
+int sdlEventClosedWindow();
 
-void sdlRender();
+/**
+ * @brief Limpa o renderer
+ */
+void sdlClearRender();
 
+/**
+ * @brief Atualiza a janela
+ */
+void sdlDraw();
+
+/**
+ * @brief Verifica se há eventos na fila do SDL
+ * @return 1 se há eventos, 0 caso contrário.
+ */
 int sdlPullEvent();
 
-void renderizarCirculoPreenchido(int centroX, int centroY, int raio, Color color);
+/**
+ * @brief Renderiza um círculo no renderer
+ * @param pos posicao do centro do círculo na janela
+ * @param raio raio do circulo
+ * @param color cor do circulo
+ */
+void sdlRenderizarCirculo(SDL_FPoint pos, int raio, SDL_Colour color);
+
+/**
+ * @brief Renderiza uma linha no renderer
+ * @param p1 ponto inicial da linha (extremo 1)
+ * @param p2 ponto final da linha (extremo 2)
+ * @param color cor da linha
+ */
+void sdlRenderizarLinha(SDL_FPoint p1, SDL_FPoint p2, SDL_Colour color);
 
 #endif //PPD_2023_SEQ_SDL_UTILS_H

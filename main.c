@@ -50,13 +50,18 @@ int main() {
 
     while (running) {
         while (sdlPullEvent()) {
-            if (sdlQuit()) {
+            if (sdlEventClosedWindow()) {
                 // Encerra o programa se o usuário fechar a janela
                 sdlDestroyWindow();
                 running = 0;
             }
 
-            sdlRender();
+            sdlClearRender();
+
+            sdlRenderizarLinha((SDL_FPoint) {400, 300}, (SDL_FPoint) {400, 400}, (SDL_Colour) {0, 255, 0, 255});
+            sdlRenderizarCirculo((SDL_FPoint) {400, 300}, 10, (SDL_Colour) {255, 0, 0, 255});
+
+            sdlDraw();
         }
     }
 
