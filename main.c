@@ -15,19 +15,35 @@ void printGrafo(Grafo *grafo) {
     }
 }
 
+/**
+ * @brief Procedimento auxiliar para construir o grafo a partir de um arquivo de entrada
+ * @param grafo Ponteiro para o ponteiro do grafo
+ * @param nomeDoArquivo nome do arquivo de entrada
+ */
+void construirGrafo(Grafo *grafo, char *nomeDoArquivo) {
+    FILE *file;
+
+    file = fopen(nomeDoArquivo, "r");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo %s\n", nomeDoArquivo);
+        return;
+    }
+
+    while (!feof(file)) {
+        int v, w, peso;
+        fscanf(file, "%*d %d %d %d", &v, &w, &peso);
+        inserirAresta(grafo, v, w, peso);
+    }
+}
+
 int main() {
+    char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
     int numVertices = 5;
     int numArestas = 7;
 
     Grafo *grafo = inicializaGrafo(numVertices, numArestas);
 
-    inserirAresta(grafo, 0, 1, 2);
-    inserirAresta(grafo, 0, 2, 5);
-    inserirAresta(grafo, 1, 2, 1);
-    inserirAresta(grafo, 1, 3, 3);
-    inserirAresta(grafo, 2, 3, 2);
-    inserirAresta(grafo, 2, 4, 4);
-    inserirAresta(grafo, 3, 4, 1);
+    construirGrafo(grafo, nomeDoArquivo);
 
     printGrafo(grafo);
 
