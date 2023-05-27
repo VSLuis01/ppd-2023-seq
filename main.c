@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "structures/grafo.h"
+#include "graphics/sdl_utils.h"
 
 #define NUM_VERTICES 91
 
@@ -43,7 +44,23 @@ void construirGrafo(Grafo *grafo, char *nomeDoArquivo) {
 int main() {
     char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
     int numVertices = NUM_VERTICES;
+    int running = 1;
 
+    sdlInitWindow(800, 600);
+
+    while (running) {
+        while (sdlPullEvent()) {
+            if (sdlQuit()) {
+                // Encerra o programa se o usuário fechar a janela
+                sdlDestroyWindow();
+                running = 0;
+            }
+
+            sdlRender();
+        }
+    }
+
+    /*
     Grafo *grafo = inicializaGrafo(numVertices);
 
     construirGrafo(grafo, nomeDoArquivo);
@@ -51,5 +68,6 @@ int main() {
     printGrafo(grafo);
 
     deleteGrafo(grafo);
+     */
     return 0;
 }
