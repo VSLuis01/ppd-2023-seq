@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include "structures/grafo.h"
 #include "graphics/sdl_utils.h"
 
-#define NUM_VERTICES 91
+#define NUM_VERTICES 3
 
 /**
  * @brief Procedimento auxiliar para exibir o grafo. Exibe o número de vértices, o número de arestas e as arestas
@@ -46,7 +45,11 @@ int main() {
     int numVertices = NUM_VERTICES;
     int running = 1;
 
-    sdlInitWindow(800, 600);
+    Grafo *grafo = inicializaGrafo(numVertices);
+
+    construirGrafo(grafo, nomeDoArquivo);
+
+    sdlInitWindow(1280, 720);
 
     while (running) {
         while (sdlPullEvent()) {
@@ -54,25 +57,20 @@ int main() {
                 // Encerra o programa se o usuário fechar a janela
                 sdlDestroyWindow();
                 running = 0;
+                break;
             }
 
             sdlClearRender();
 
-            sdlRenderizarLinha((SDL_FPoint) {400, 300}, (SDL_FPoint) {400, 400}, (SDL_Colour) {0, 255, 0, 255}, "13");
-            sdlRenderizarCirculo((SDL_FPoint) {400, 300}, 15, (SDL_Colour) {255, 0, 0, 255}, "1");
+            renderizarGrafo(grafo, renderizarGrafoHierarquico);
 
             sdlDraw();
         }
     }
 
-    /*
-    Grafo *grafo = inicializaGrafo(numVertices);
-
-    construirGrafo(grafo, nomeDoArquivo);
-
     printGrafo(grafo);
 
     deleteGrafo(grafo);
-     */
+
     return 0;
 }
