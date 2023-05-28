@@ -58,8 +58,8 @@ int main() {
 
             sdlClearRender();
 
-            sdlRenderizarLinha((SDL_FPoint) {400, 300}, (SDL_FPoint) {400, 400}, (SDL_Colour) {0, 255, 0, 255});
-            sdlRenderizarCirculo((SDL_FPoint) {400, 300}, 10, (SDL_Colour) {255, 0, 0, 255});
+            sdlRenderizarLinha((SDL_FPoint) {400, 300}, (SDL_FPoint) {400, 400}, (SDL_Colour) {0, 255, 0, 255}, "13");
+            sdlRenderizarCirculo((SDL_FPoint) {400, 300}, 15, (SDL_Colour) {255, 0, 0, 255}, "1");
 
             sdlDraw();
         }

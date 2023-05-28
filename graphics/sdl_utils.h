@@ -6,6 +6,7 @@
 #define PPD_2023_SEQ_SDL_UTILS_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <math.h>
 
 
@@ -49,7 +50,7 @@ int sdlPullEvent();
  * @param raio raio do circulo
  * @param color cor do circulo
  */
-void sdlRenderizarCirculo(SDL_FPoint pos, int raio, SDL_Colour color);
+void sdlRenderizarCirculo(SDL_FPoint pos, int raio, SDL_Colour color, const char* label);
 
 /**
  * @brief Renderiza uma linha no renderer
@@ -57,6 +58,6 @@ void sdlRenderizarCirculo(SDL_FPoint pos, int raio, SDL_Colour color);
  * @param p2 ponto final da linha (extremo 2)
  * @param color cor da linha
  */
-void sdlRenderizarLinha(SDL_FPoint p1, SDL_FPoint p2, SDL_Colour color);
+void sdlRenderizarLinha(SDL_FPoint p1, SDL_FPoint p2, SDL_Colour color, const char* label);
 
 #endif //PPD_2023_SEQ_SDL_UTILS_H
