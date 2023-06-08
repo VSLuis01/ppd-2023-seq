@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "graphics/sdl_utils.h"
 
-#define NUM_VERTICES 3
+#define NUM_VERTICES 91
 
 /**
  * @brief Procedimento auxiliar para exibir o grafo. Exibe o número de vértices, o número de arestas e as arestas
@@ -17,6 +17,9 @@ void printGrafo(Grafo *grafo) {
         totalPeso += grafo->arestas[i].peso;
     }
     printf("Peso total: %d\n", totalPeso);
+    for (int i = 0; i < grafo->V; ++i) {
+        printf("%d - GRAU (%d)\n", grafo->vertices[i].v, grafo->vertices[i].grau);
+    }
 }
 
 /**
@@ -37,19 +40,19 @@ void construirGrafo(Grafo *grafo, char *nomeDoArquivo) {
         int v, w, peso;
         fscanf(file, "%*d %d %d %d", &v, &w, &peso);
         inserirAresta(grafo, v, w, peso);
+        inserirVertice(grafo, v, w);
     }
 }
 
 int main() {
     char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
-    int numVertices = NUM_VERTICES;
     int running = 1;
 
-    Grafo *grafo = inicializaGrafo(numVertices);
+    Grafo *grafo = inicializaGrafo();
 
     construirGrafo(grafo, nomeDoArquivo);
 
-    sdlInitWindow(1280, 720);
+    /*sdlInitWindow(1600, 1300);
 
     while (running) {
         while (sdlPullEvent()) {
@@ -62,11 +65,11 @@ int main() {
 
             sdlClearRender();
 
-            renderizarGrafo(grafo, renderizarGrafoHierarquico);
+            renderizarGrafo(grafo, desenharVerticesDoGrafo);
 
             sdlDraw();
         }
-    }
+    }*/
 
     printGrafo(grafo);
 
