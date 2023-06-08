@@ -14,6 +14,10 @@ TTF_Font *fonte;
 SDL_Surface *superficieTexto;
 SDL_Texture *texturaTexto;
 
+typedef struct {
+    SDL_Point pos;
+} PosicoesVertices;
+
 /**
  * @brief Inicializa a janela do SDL (window e renderer)
  * @param width comprimento da janela
@@ -24,7 +28,7 @@ void sdlInitWindow(int width, int height) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     // Criação da janela
-    window = SDL_CreateWindow("Exemplo SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
+    window = SDL_CreateWindow("Arvore Geradora Mínima Sequencial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
@@ -147,134 +151,52 @@ void sdlRenderizarLinha(SDL_Point p1, SDL_Point p2, SDL_Colour color, const char
     destroyTexto();
 }
 
-void renderizarGrafoHierarquico(Grafo *grafo) {
-    int numCamadas = 3;
-    int alturaCamada = 150;
-    int espacamentoHorizontal = 100;
-    int raioVertice = 20;
+void desenharGrafo(Grafo* grafo) {
+    // Determine a largura e altura da janela
+    int larguraJanela, alturaJanela;
+    int raioVertice = 10;
+    SDL_GetRendererOutputSize(renderer, &larguraJanela, &alturaJanela);
 
-    int centerX = 400;
-    int centerY = alturaCamada / 2;
+    PosicoesVertices vertices[grafo->V];
 
-    int numVerticesCamada = grafo->V / numCamadas;
-    int espacamentoVertical = alturaCamada / (numVerticesCamada + 1);
+    // Calcule o raio máximo permitido com base nas dimensões da janela
+    int raioMaximo = (larguraJanela < alturaJanela ? larguraJanela : alturaJanela) / 3;
+    srand(5);
 
+    // Calcule as coordenadas do centro da janela
+    int centerX = larguraJanela / 2;
+    int centerY = alturaJanela / 2;
+
+    // Desenhe os vértices em um círculo em torno do centro da janela
     for (int i = 0; i < grafo->V; i++) {
-        int camadaAtual = i / (grafo->V / numCamadas);
+        // Gere um raio aleatório para o vértice atual
+        int raio = rand() % raioMaximo + 200;
 
-        int x = centerX + camadaAtual * espacamentoHorizontal;
-        int y = centerY + (i % (numVerticesCamada) + 1) * espacamentoVertical;
+        // Calcule o ângulo de separação entre os vértices
+        double anguloSeparacao = 2 * M_PI / grafo->V;
 
-        sdlRenderizarCirculo((SDL_Point){x, y}, raioVertice, (SDL_Colour){255, 0, 0, 255}, "1");
+        // Calcule o ângulo atual para o vértice atual
+        double angulo = grafo->vertices[i].v * anguloSeparacao;
+        char label[10];
+        sprintf(label, "%d", grafo->vertices[i].v);
+
+        // Calcule as coordenadas do vértice com base no raio e no ângulo
+        int posX = centerX + raio * cos(angulo);
+        int posY = centerY + raio * sin(angulo);
+
+        vertices[grafo->vertices[i].v - 1].pos = (SDL_Point){posX, posY};
+
+        // Desenhe o vértice na posição calculada
+        sdlRenderizarCirculo((SDL_Point){posX, posY}, raioVertice, (SDL_Colour){255, 0, 0, 255}, label);
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    for (int i = 0; i < grafo->A; i++) {
-        Aresta aresta = grafo->arestas[i];
-
-        int camadaOrigem = aresta.v / (grafo->V / numCamadas);
-        int camadaDestino = aresta.w / (grafo->V / numCamadas);
-
-        if (camadaOrigem < camadaDestino) {
-            int x1 = centerX + camadaOrigem * espacamentoHorizontal;
-            int y1 = centerY + (aresta.v % (grafo->V / numCamadas) + 1) * espacamentoVertical;
-
-            int x2 = centerX + camadaDestino * espacamentoHorizontal;
-            int y2 = centerY + (aresta.w % (grafo->V / numCamadas) + 1) * espacamentoVertical;
-
-            sdlRenderizarLinha((SDL_Point){x1, y1}, (SDL_Point){x2, y2}, (SDL_Colour){255, 0, 0, 255}, "1");
-        }
-    }
-}
-
-void renderizarForcaDirecionada(Grafo* grafo) {
-    int larguraTela = 1280;
-    int alturaTela = 720;
-
-    // Parâmetros do algoritmo de força direcionada
-    float k = 0.5; // Constante de repulsão
-    float c = 0.1; // Constante de atracão
-    float dMax = 200.0; // Distância máxima de atração
-    float dt = 0.1; // Passo de tempo
-
-    // Inicialização das posições dos vértices
-    float* posX = (float*)malloc(grafo->V * sizeof(float));
-    float* posY = (float*)malloc(grafo->V * sizeof(float));
-
-    for (int i = 0; i < grafo->V; i++) {
-        posX[i] = (float)(rand() % larguraTela);
-        posY[i] = (float)(rand() % alturaTela);
+    // Renderiza as arestas
+    for (int i = 0; i < grafo->A; ++i) {
+        char label[10];
+        sprintf(label, "%d", grafo->arestas[i].peso);
+        sdlRenderizarLinha(vertices[grafo->arestas[i].v - 1].pos, vertices[grafo->arestas[i].w - 1].pos, (SDL_Colour){0, 0, 255, 255}, label);
     }
 
-    // Laço principal do algoritmo de força direcionada
-    for (int iter = 0; iter < 1000; iter++) {
-        // Zerar as forças em cada iteração
-        float* forceX = (float*)calloc(grafo->V, sizeof(float));
-        float* forceY = (float*)calloc(grafo->V, sizeof(float));
-
-        // Cálculo das forças de repulsão entre os vértices
-        for (int i = 0; i < grafo->V; i++) {
-            for (int j = i + 1; j < grafo->V; j++) {
-                float dx = posX[i] - posX[j];
-                float dy = posY[i] - posY[j];
-                float dist = sqrt(dx * dx + dy * dy);
-                if (dist > 0) {
-                    float force = k / (dist * dist);
-                    forceX[i] += force * dx;
-                    forceY[i] += force * dy;
-                    forceX[j] -= force * dx;
-                    forceY[j] -= force * dy;
-                }
-            }
-        }
-
-        // Cálculo das forças de atração entre os vértices conectados
-        for (int i = 0; i < grafo->A; i++) {
-            Aresta aresta = grafo->arestas[i];
-            float dx = posX[aresta.w] - posX[aresta.v];
-            float dy = posY[aresta.w] - posY[aresta.v];
-            float dist = sqrt(dx * dx + dy * dy);
-            if (dist > 0 && dist < dMax) {
-                float force = c * (dist - dMax) / dist;
-                forceX[aresta.v] += force * dx;
-                forceY[aresta.v] += force * dy;
-                forceX[aresta.w] -= force * dx;
-                forceY[aresta.w] -= force * dy;
-            }
-        }
-
-        // Atualização das posições dos vértices
-        for (int i = 0; i < grafo->V; i++) {
-            posX[i] += dt * forceX[i];
-            posY[i] += dt * forceY[i];
-        }
-
-        // Renderização do grafo a cada iteração
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
-
-        for (int i = 0; i < grafo->V; i++) {
-            char label[10];
-            sprintf(label, "V%d", i + 1);
-
-            sdlRenderizarCirculo((SDL_Point){(int)posX[i], (int)posY[i]}, 10, (SDL_Colour){255, 0, 0, 255}, label);
-        }
-
-        for (int i = 0; i < grafo->A; i++) {
-            Aresta aresta = grafo->arestas[i];
-
-            char label[10];
-            sprintf(label, "A%d", i + 1);
-
-            sdlRenderizarLinha((SDL_Point){(int)posX[aresta.v], (int)posY[aresta.v]}, (SDL_Point){(int)posX[aresta.w], (int)posY[aresta.w]}, (SDL_Colour){0, 0, 255, 255}, label);
-        }
-
-        SDL_RenderPresent(renderer);
-        SDL_Delay(100); // Atraso para visualização
-    }
-
-    free(posX);
-    free(posY);
 }
 
 

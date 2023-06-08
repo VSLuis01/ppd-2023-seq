@@ -52,26 +52,26 @@ int main() {
 
     construirGrafo(grafo, nomeDoArquivo);
 
-    /*sdlInitWindow(1600, 1300);
+    sdlInitWindow(1600, 1300);
 
     while (running) {
+        sdlClearRender();
+
+        renderizarGrafo(grafo, desenharGrafo);
+
+        sdlDraw();
         while (sdlPullEvent()) {
             if (sdlEventClosedWindow()) {
-                // Encerra o programa se o usuário fechar a janela
                 sdlDestroyWindow();
                 running = 0;
                 break;
             }
-
-            sdlClearRender();
-
-            renderizarGrafo(grafo, desenharVerticesDoGrafo);
-
-            sdlDraw();
         }
-    }*/
+    }
 
-    printGrafo(grafo);
+
+
+//    printGrafo(grafo);
 
     deleteGrafo(grafo);
 
