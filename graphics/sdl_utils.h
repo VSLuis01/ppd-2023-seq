@@ -8,6 +8,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <math.h>
+#include <unistd.h>
+#include <linux/limits.h>
+#include <string.h>
 #include "../structures/grafo.h"
 
 // Função de renderização do grafo

@@ -75,12 +75,34 @@ void destroyTexto() {
     TTF_CloseFont(fonte);
 }
 
-void initTexto(const char *texto, int tamanhoFonte) {
+int initTexto(const char *texto, int tamanhoFonte) {
     // Renderizar texto
-    fonte = TTF_OpenFont("../opensans.ttf", tamanhoFonte);
-    SDL_Color corTexto = {255, 255, 255, 255};
-    superficieTexto = TTF_RenderText_Solid(fonte, texto, corTexto);
-    texturaTexto = SDL_CreateTextureFromSurface(renderer, superficieTexto);
+    char pathFont[PATH_MAX]; // Tamanho máximo do caminho
+    if (getcwd(pathFont, sizeof(pathFont)) != NULL) {
+        strcat(pathFont, "/opensans.ttf");
+        fonte = TTF_OpenFont(pathFont, tamanhoFonte);
+
+        if (fonte == NULL) {
+            perror("Erro ao iniciar fonte");
+            return 0;
+        }
+
+        SDL_Color corTexto = {255, 255, 255, 255};
+        superficieTexto = TTF_RenderText_Solid(fonte, texto, corTexto);
+
+        if (superficieTexto == NULL) {
+            perror("Erro ao criar textura");
+            return 0;
+        }
+
+        texturaTexto = SDL_CreateTextureFromSurface(renderer, superficieTexto);
+
+        return 1;
+    } else {
+        perror("Erro ao obter o diretório atual");
+        return 0;
+    }
+
 }
 
 /**
@@ -104,15 +126,15 @@ void sdlRenderizarCirculo(SDL_Point pos, int raio, SDL_Colour color, const char 
         }
     }
 
-    initTexto(label, FONT_SIZE);
+    if (initTexto(label, FONT_SIZE)) {
+        // Definir a posição do label
+        int posX = pos.x - superficieTexto->w / 2;
+        int posY = pos.y - superficieTexto->h / 2;
 
-    // Definir a posição do label
-    int posX = pos.x - superficieTexto->w / 2;
-    int posY = pos.y - superficieTexto->h / 2;
-
-    // Renderizar o label
-    SDL_Rect destinoTexto = {posX, posY, superficieTexto->w, superficieTexto->h};
-    SDL_RenderCopy(renderer, texturaTexto, NULL, &destinoTexto);
+        // Renderizar o label
+        SDL_Rect destinoTexto = {posX, posY, superficieTexto->w, superficieTexto->h};
+        SDL_RenderCopy(renderer, texturaTexto, NULL, &destinoTexto);
+    }
 
     destroyTexto();
 }
@@ -135,19 +157,18 @@ void sdlRenderizarLinha(SDL_Point p1, SDL_Point p2, SDL_Colour color, const char
     float centerX = (p1.x + p2.x) / 2;
     float centerY = (p1.y + p2.y) / 2;
 
-    initTexto(label, FONT_SIZE);
+    if (initTexto(label, FONT_SIZE)) {
+        int textoWidth, textoHeight;
+        TTF_SizeText(fonte, label, &textoWidth, &textoHeight);
 
-    int textoWidth, textoHeight;
-    TTF_SizeText(fonte, label, &textoWidth, &textoHeight);
+        // Define o deslocamento horizontal e vertical do texto
+        int offsetX = textoWidth / 2;
+        int offsetY = textoHeight / 2;
 
-    // Define o deslocamento horizontal e vertical do texto
-    int offsetX = textoWidth / 2;
-    int offsetY = textoHeight / 2;
-
-    // Renderiza o texto centralizado com deslocamento
-    SDL_Rect destinoTexto = {centerX - offsetX, centerY - offsetY, textoWidth, textoHeight};
-    SDL_RenderCopy(renderer, texturaTexto, NULL, &destinoTexto);
-
+        // Renderiza o texto centralizado com deslocamento
+        SDL_Rect destinoTexto = {centerX - offsetX, centerY - offsetY, textoWidth, textoHeight};
+        SDL_RenderCopy(renderer, texturaTexto, NULL, &destinoTexto);
+    }
     destroyTexto();
 }
 
