@@ -52,7 +52,10 @@ int main() {
 
     construirGrafo(grafo, nomeDoArquivo);
 
-    sdlInitWindow(1600, 1300);
+    Grafo *agm = arvoreGeradoraMinima(grafo);
+
+    printGrafo(agm);
+    /*sdlInitWindow(1600, 1300);
 
     while (running) {
         sdlClearRender();
@@ -67,13 +70,14 @@ int main() {
                 break;
             }
         }
-    }
+    }*/
 
 
 
 //    printGrafo(grafo);
 
     deleteGrafo(grafo);
+    deleteGrafo(agm);
 
     return 0;
 }

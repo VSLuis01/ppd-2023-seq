@@ -1,5 +1,88 @@
 #include "grafo.h"
 #include <stdlib.h>
+#include <stdbool.h>
+#include <limits.h>
+
+
+int regraDesempate(Aresta aresta1, Aresta aresta2) {
+    // Implemente a sua regra de desempate aqui
+    return 1; // Por padrão, a primeira aresta é preferida sobre a segunda
+}
+
+int forPreferidoSobre(Aresta aresta1, Aresta aresta2) {
+    return (aresta2.v == -1) || (aresta1.peso < aresta2.peso) || (aresta1.peso == aresta2.peso && regraDesempate(aresta1, aresta2));
+}
+
+/**
+ * @brief Constrói uma arvore geradora mínima a partir do grafo de entrada.
+ * @param grafo
+ * @return Arvore geradora minima F (V, E')
+ */
+Grafo* arvoreGeradoraMinima(Grafo* grafo) {
+    Grafo* agm = inicializaGrafoGerador(*grafo);
+
+    // Inicializar a floresta AGM
+    for (int i = 0; i < grafo->V; i++) {
+        agm->vertices[i].v = grafo->vertices[i].v;
+        agm->vertices[i].grau = 0;
+    }
+
+    bool concluido = false;
+    while (!concluido) {
+        // Encontrar os componentes conectados de AGM e atribuir a cada vértice seu componente
+        int* componente = (int*)malloc(grafo->V * sizeof(int));
+        for (int i = 0; i < grafo->V; i++) {
+            componente[grafo->vertices[i].v - 1] = grafo->vertices[i].v;
+        }
+
+        Aresta* menorPeso = (Aresta*)malloc(grafo->V * sizeof(Aresta));
+        for (int i = 0; i < grafo->V; i++) {
+            menorPeso[i].v = -1;
+            menorPeso[i].w = -1;
+            menorPeso[i].peso = INT_MAX; // Adicione essa linha para inicializar o peso com um valor máximo
+        }
+
+        bool todasArestasNenhuma = true;
+        for (int i = 0; i < grafo->A; i++) {
+            Aresta aresta = grafo->arestas[i];
+            int componenteU = componente[aresta.v - 1];
+            int componenteV = componente[aresta.w - 1];
+
+            if (componenteU != componenteV) {
+                todasArestasNenhuma = false;
+
+                if (forPreferidoSobre(aresta, menorPeso[componenteU])) {
+                    menorPeso[componenteU] = aresta;
+                }
+
+                if (forPreferidoSobre(aresta, menorPeso[componenteV])) {
+                    menorPeso[componenteV] = aresta;
+                }
+            }
+        }
+
+        if (todasArestasNenhuma) {
+            concluido = true;
+        } else {
+            concluido = false;
+            for (int i = 0; i < grafo->V; i++) {
+                if (menorPeso[i].v != -1) {
+                    agm->arestas = (Aresta*)realloc(agm->arestas, (agm->A + 1) * sizeof(Aresta));
+                    agm->arestas[agm->A] = menorPeso[i];
+                    agm->vertices[menorPeso[i].v].grau++;
+                    agm->vertices[menorPeso[i].w].grau++;
+                    agm->A++;
+                    componente[menorPeso[i].w] = componente[menorPeso[i].v];
+                }
+            }
+        }
+
+        free(componente);
+        free(menorPeso);
+    }
+
+    return agm;
+}
 
 /**
  * @brief Insere aresta no grafo e incrementa o número de arestas
@@ -85,3 +168,17 @@ Grafo* inicializaGrafo() {
     grafo->vertices = NULL;
     return grafo;
 }
+
+/**
+ * @brief Inicializa o grafoGerador. Aloca memória para o grafo e para o conjunto de verticees e inicializa o número de vértices
+ * @return Ponteiro para o grafo
+ */
+Grafo* inicializaGrafoGerador(Grafo grafo) {
+    Grafo* grafoGerador = (Grafo*) malloc(sizeof(Grafo));
+    grafoGerador->V = grafo.V;
+    grafoGerador->A = 0;  // Iniciar o número de arestas como 0
+    grafoGerador->arestas = NULL; // Inicialmente, não há arestas alocadas
+    grafoGerador->vertices = (Vertice*) malloc(grafo.V * sizeof(Vertice));
+    return grafoGerador;
+}
+

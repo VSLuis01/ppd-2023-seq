@@ -22,11 +22,21 @@ typedef struct {
     Aresta *arestas; /*Conjunto de arestas*/
 } Grafo;
 
+
+/**
+ * @brief Constrói uma arvore geradora mínima a partir do grafo de entrada.
+ * @param grafo
+ * @return Arvore geradora minima F (V, E')
+ */
+Grafo* arvoreGeradoraMinima(Grafo *grafo);
+
 /**
  * @brief Inicializa o grafo. Aloca memória para o grafo e para o conjunto de arestas e inicializa o número de vértices e arestas
  * @return Ponteiro para o grafo
  */
 Grafo* inicializaGrafo();
+
+Grafo* inicializaGrafoGerador(Grafo grafo);
 /**
  * @brief Insere aresta no grafo e incrementa o número de arestas
  * @param grafo Ponteiro para o grafo
