@@ -43,6 +43,8 @@ void construirGrafo(Grafo *grafo, char *nomeDoArquivo) {
 }
 
 int main() {
+    printf("Comandos:\n - Espaço: Mostrar AGM\n - Seta para cima: Aumentar seed\n - Seta para baixo: Diminuir seed\n - R: Resetar seed\n");
+
     char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
     int running = 1;
 
@@ -52,13 +54,17 @@ int main() {
 
     Grafo *agm = arvoreGeradoraMinima(grafo);
 
-//    printGrafo(agm);
-    /*sdlInitWindow(1600, 1300);
+    sdlInitWindow(1600, 1300);
 
+    int renderizarAGM = 0;
     while (running) {
         sdlClearRender();
 
-        renderizarGrafo(grafo, desenharGrafo);
+        if (renderizarAGM) {
+            renderizarGrafo(agm, desenharGrafo);
+        } else {
+            renderizarGrafo(grafo, desenharGrafo);
+        }
 
         sdlDraw();
         while (sdlPullEvent()) {
@@ -66,13 +72,23 @@ int main() {
                 sdlDestroyWindow();
                 running = 0;
                 break;
+            } else if (sdlEventKeyDown()) {
+                if (sdlGetKeyCode() == SDLK_SPACE) {
+                    renderizarAGM = !renderizarAGM;
+                }
+                if (sdlGetKeyCode() == SDLK_UP) {
+                    changeSeed(1);
+                }
+                if (sdlGetKeyCode() == SDLK_DOWN) {
+                    changeSeed(-1);
+                }
+                if (sdlGetKeyCode() == SDLK_r) {
+                    setSeed(20);
+                }
             }
         }
-    }*/
+    }
 
-
-
-//    printGrafo(grafo);
 
     deleteGrafo(grafo);
     grafo = NULL;

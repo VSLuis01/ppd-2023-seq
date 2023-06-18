@@ -3,6 +3,12 @@
 //
 
 #include "sdl_utils.h"
+#include <math.h>
+#include <unistd.h>
+#include <string.h>
+#include <linux/limits.h>
+
+
 
 #define FONT_SIZE 12
 
@@ -17,6 +23,8 @@ SDL_Texture *texturaTexto;
 typedef struct {
     SDL_Point pos;
 } PosicoesVertices;
+
+int seed = 20;
 
 /**
  * @brief Inicializa a janela do SDL (window e renderer)
@@ -47,6 +55,14 @@ void sdlDestroyWindow() {
  */
 int sdlEventClosedWindow() {
     return event.type == SDL_QUIT;
+}
+
+int sdlEventKeyDown() {
+    return event.type == SDL_KEYDOWN;
+}
+
+SDL_KeyCode sdlGetKeyCode() {
+    return event.key.keysym.sym;
 }
 
 void sdlClearRender() {
@@ -182,11 +198,12 @@ void desenharGrafo(Grafo* grafo) {
 
     // Calcule o raio máximo permitido com base nas dimensões da janela
     int raioMaximo = (larguraJanela < alturaJanela ? larguraJanela : alturaJanela) / 3;
-    srand(5);
+
+    srand(seed);
 
     // Calcule as coordenadas do centro da janela
     int centerX = larguraJanela / 2;
-    int centerY = alturaJanela / 2;
+    int centerY = alturaJanela / 2 - 110;
 
     // Desenhe os vértices em um círculo em torno do centro da janela
     for (int i = 0; i < grafo->V; i++) {
@@ -220,6 +237,13 @@ void desenharGrafo(Grafo* grafo) {
 
 }
 
+void changeSeed(int sum) {
+    seed += sum;
+}
+
+void setSeed(int newSeed) {
+    seed = newSeed;
+}
 
 void renderizarGrafo(Grafo *grafo, RenderFunction renderFunction) {
     // Configurações do layout do grafo

@@ -7,10 +7,6 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <math.h>
-#include <unistd.h>
-#include <linux/limits.h>
-#include <string.h>
 #include "../structures/grafo.h"
 
 // Função de renderização do grafo
@@ -33,6 +29,15 @@ void sdlDestroyWindow();
  * @return
  */
 int sdlEventClosedWindow();
+
+
+int sdlEventKeyDown();
+
+SDL_KeyCode sdlGetKeyCode();
+
+void changeSeed(int sum);
+
+void setSeed(int seed);
 
 /**
  * @brief Limpa o renderer
