@@ -22,6 +22,7 @@ typedef struct {
     Aresta *arestas; /*Conjunto de arestas*/
 } Grafo;
 
+void printGrafo(Grafo *grafo);
 
 /**
  * @brief Constrói uma arvore geradora mínima a partir do grafo de entrada.
@@ -36,6 +37,8 @@ Grafo* arvoreGeradoraMinima(Grafo *grafo);
  */
 Grafo* inicializaGrafo();
 
+Grafo* inicializaGrafoComVertice(int numVertices);
+
 Grafo* inicializaGrafoGerador(Grafo grafo);
 /**
  * @brief Insere aresta no grafo e incrementa o número de arestas
@@ -44,7 +47,7 @@ Grafo* inicializaGrafoGerador(Grafo grafo);
  * @param w vertice 2
  * @param peso
  */
-int inserirAresta(Grafo* grafo, int v, int w, int peso);
+int inserirAresta(Grafo* grafo, int v, int w, int peso, int somarGrau);
 
 /**
  * @brief Insere Vertices no conjunto de vertices
@@ -52,7 +55,9 @@ int inserirAresta(Grafo* grafo, int v, int w, int peso);
  * @param v vertice
  * @param w vertice
  */
-void inserirVertice(Grafo* grafo, int v, int w);
+void inserirVertice(Grafo* grafo, int v);
+
+void inserirVerticeDireto(Grafo* grafo, int v);
 
 /**
  * @brief Libera a memória alocada para o grafo e para o conjunto de arestas
