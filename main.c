@@ -75,15 +75,16 @@ int main() {
             } else if (sdlEventKeyDown()) {
                 if (sdlGetKeyCode() == SDLK_SPACE) {
                     renderizarAGM = !renderizarAGM;
-                }
-                if (sdlGetKeyCode() == SDLK_UP) {
+                } else if (sdlGetKeyCode() == SDLK_UP) {
                     changeSeed(1);
-                }
-                if (sdlGetKeyCode() == SDLK_DOWN) {
+                } else if (sdlGetKeyCode() == SDLK_DOWN) {
                     changeSeed(-1);
-                }
-                if (sdlGetKeyCode() == SDLK_r) {
+                } else if (sdlGetKeyCode() == SDLK_r) {
                     setSeed(20);
+                } else if (sdlGetKeyCode() == SDLK_ESCAPE) {
+                    sdlDestroyWindow();
+                    running = 0;
+                    break;
                 }
             }
         }

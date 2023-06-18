@@ -89,23 +89,24 @@ void encontrarComponentesConectados(Grafo *arvoreGM, Grafo **componentes, int *q
                 inserirVertice(componentes[*quantComponentes], arvoreGM->arestas[i].w);
                 inserirAresta(componentes[*quantComponentes], arvoreGM->arestas[i].v, arvoreGM->arestas[i].w, arvoreGM->arestas[i].peso, 0);
                 *quantComponentes += 1;
+
             } else if (componenteV != -1 && componenteW == -1) { /*Insere a componente W na mesma componente de V. Pois estao conectados*/
                 inserirVertice(componentes[componenteV], arvoreGM->arestas[i].w);
                 inserirAresta(componentes[componenteV], arvoreGM->arestas[i].v, arvoreGM->arestas[i].w, arvoreGM->arestas[i].peso, 0);
+
             } else if (componenteV == -1) { /*Insere a componente V na mesma componente de W. Pois estao conectados*/
                 inserirVertice(componentes[componenteW], arvoreGM->arestas[i].v);
-                inserirAresta(componentes[componenteW], arvoreGM->arestas[i].v, arvoreGM->arestas[i].w,
-                              arvoreGM->arestas[i].peso, 0);
+                inserirAresta(componentes[componenteW], arvoreGM->arestas[i].v, arvoreGM->arestas[i].w, arvoreGM->arestas[i].peso, 0);
+
             } else if (componenteV != componenteW) { /*Se V e W estao em componentes diferentes, entao insere a componente W na componente V*/
+
                 for (int j = 0; j < componentes[componenteW]->V; ++j) {
                     inserirVertice(componentes[componenteV], componentes[componenteW]->vertices[j].v);
                 }
                 for (int j = 0; j < componentes[componenteW]->A; ++j) {
-                    inserirAresta(componentes[componenteV], componentes[componenteW]->arestas[j].v,
-                                  componentes[componenteW]->arestas[j].w, componentes[componenteW]->arestas[j].peso, 0);
+                    inserirAresta(componentes[componenteV], componentes[componenteW]->arestas[j].v, componentes[componenteW]->arestas[j].w, componentes[componenteW]->arestas[j].peso, 0);
                 }
-                inserirAresta(componentes[componenteV], arvoreGM->arestas[i].v, arvoreGM->arestas[i].w,
-                              arvoreGM->arestas[i].peso, 0);
+                inserirAresta(componentes[componenteV], arvoreGM->arestas[i].v, arvoreGM->arestas[i].w, arvoreGM->arestas[i].peso, 0);
                 deleteGrafo(componentes[componenteW]);
                 componentes[componenteW] = NULL;
                 novaQuantComponentes += 1;
@@ -153,7 +154,6 @@ Grafo *arvoreGeradoraMinima(Grafo *grafo) {
                         inserirVertice(componente[i], grafo->arestas[k].w);
                         inserirAresta(componente[i], grafo->arestas[k].v, grafo->arestas[k].w, grafo->arestas[k].peso,0);
                     }
-
                 }
             }
         }
@@ -249,6 +249,13 @@ int inserirAresta(Grafo *grafo, int v, int w, int peso, int somarGrau) {
     return 1;
 }
 
+/**
+ * @brief Insere o vertice diretamente no seu indice,
+ * @attention Essa funcao so funciona quando o grafo eh iniciado com a funcao Grafo* inicializaGrafoComVertice(int numVertices);
+ * @attention Nessa funcao, os indices do conjunto de vertices sao iguais ao (valor do vertice - 1).
+ * @param grafo
+ * @param v
+ */
 void inserirVerticeDireto(Grafo *grafo, int v) {
     if (grafo->vertices[v - 1].v == -1) {
         grafo->vertices[v - 1].v = v;
@@ -256,7 +263,9 @@ void inserirVerticeDireto(Grafo *grafo, int v) {
 }
 
 /**
- * @brief Insere Vertices no conjunto de vertices
+ * @brief Insere vertices de forma dinamica.
+ * @attention Essa funcao eh melhor utilizada quando o grafo eh iniciado com a funcao Grafo *inicializaGrafo();
+ * @attention Nessa funcao, os indices do conjunto de vertices NAO sao iguais ao valor do vertice.
  * @param grafo ponteiro para o grafo
  * @param v vertice
  * @param w vertice
@@ -275,7 +284,6 @@ void inserirVertice(Grafo *grafo, int v) {
     grafo->vertices[grafo->V++] = novoVerticeV;
 
 }
-
 
 /**
  * @brief Libera a memória alocada para o grafo e para o conjunto de arestas
