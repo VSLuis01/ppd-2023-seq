@@ -1,7 +1,23 @@
 #include "graphics/sdl_utils.h"
+#include <stdio.h>
 
 #define NUM_VERTICES 9
 
+
+void printGrafo(Grafo *grafo) {
+    int totalPeso = 0;
+    printf("Número de vértices: %d\n", grafo->V);
+    printf("Número de arestas: %d\n", grafo->A);
+    printf("Arestas: \n");
+    for (int i = 0; i < grafo->A; i++) {
+        printf("Aresta %d: %d - %d (peso: %d)\n", i, grafo->arestas[i].v, grafo->arestas[i].w, grafo->arestas[i].peso);
+        totalPeso += grafo->arestas[i].peso;
+    }
+    printf("Peso total: %d\n", totalPeso);
+    for (int i = 0; i < grafo->V; ++i) {
+        printf("%d - GRAU (%d)\n", grafo->vertices[i].v, grafo->vertices[i].grau);
+    }
+}
 
 /**
  * @brief Procedimento auxiliar para construir o grafo a partir de um arquivo de entrada
@@ -59,7 +75,9 @@ int main() {
 //    printGrafo(grafo);
 
     deleteGrafo(grafo);
-//    deleteGrafo(agm);
+    grafo = NULL;
+    deleteGrafo(agm);
+    agm = NULL;
 
     return 0;
 }
