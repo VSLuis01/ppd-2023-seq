@@ -42,13 +42,17 @@ void construirGrafo(Grafo *grafo, char *nomeDoArquivo) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     printf("Comandos:\n - Espaço: Mostrar AGM\n - Seta para cima: Aumentar seed\n - Seta para baixo: Diminuir seed\n - R: Resetar seed\n");
 
     char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
     int running = 1;
 
-    Grafo *grafo = inicializaGrafoComVertice(NUM_VERTICES);
+    int numVerticesArg = atoi(argv[1]);
+
+    int numVertices = argc != 2 ? NUM_VERTICES : numVerticesArg == 0 ? NUM_VERTICES : numVerticesArg;
+
+    Grafo *grafo = inicializaGrafoComVertice(numVertices);
 
     construirGrafo(grafo, nomeDoArquivo);
 
