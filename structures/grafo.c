@@ -193,8 +193,7 @@ Grafo *arvoreGeradoraMinima(Grafo *grafo) {
             concluido = true;
         } else {
             concluido = false;
-            for (int i = 0;
-                 i < quantComponentes; ++i) { // Para cada componente cuja aresta de menor peso não é "Nenhuma", faça:
+            for (int i = 0; i < quantComponentes; ++i) { // Para cada componente cuja aresta de menor peso não é "Nenhuma", faça:
                 if (arestaMenorPeso[i].peso != -1) {
                     // Adicione sua aresta de menor peso em E'.
                     inserirAresta(arvoreGeradoraMinima, arestaMenorPeso[i].v, arestaMenorPeso[i].w, arestaMenorPeso[i].peso, 1);
