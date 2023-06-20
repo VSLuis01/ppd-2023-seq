@@ -13,9 +13,7 @@ int regraDesempate(Aresta aresta1, Aresta aresta2) {
 }
 
 int forPreferidoSobre(Aresta aresta1, Aresta aresta2) {
-    return (aresta2.peso == -1) ||
-           (aresta1.peso < aresta2.peso) ||
-           (aresta1.peso == aresta2.peso && regraDesempate(aresta1, aresta2));
+    return (aresta2.peso == -1) || (aresta1.peso < aresta2.peso) || (aresta1.peso == aresta2.peso && regraDesempate(aresta1, aresta2));
 }
 
 /**
@@ -147,12 +145,12 @@ Grafo *arvoreGeradoraMinima(Grafo *grafo) {
                     if (grafo->arestas[k].v == componente[i]->vertices[j].v) {
                         // Se o vertice da aresta for igual ao vertice do componente, então o vertice da aresta pertence ao componente
                         inserirVertice(componente[i], grafo->arestas[k].v);
-                        inserirAresta(componente[i], grafo->arestas[k].v, grafo->arestas[k].w, grafo->arestas[k].peso,0);
+                        inserirAresta(componente[i], grafo->arestas[k].v, grafo->arestas[k].w, grafo->arestas[k].peso, 0);
                     }
                     if (grafo->arestas[k].w == componente[i]->vertices[j].v) {
                         // Se o vertice da aresta for igual ao vertice do componente, então o vertice da aresta pertence ao componente
                         inserirVertice(componente[i], grafo->arestas[k].w);
-                        inserirAresta(componente[i], grafo->arestas[k].v, grafo->arestas[k].w, grafo->arestas[k].peso,0);
+                        inserirAresta(componente[i], grafo->arestas[k].v, grafo->arestas[k].w, grafo->arestas[k].peso, 0);
                     }
                 }
             }
@@ -230,8 +228,7 @@ int inserirAresta(Grafo *grafo, int v, int w, int peso, int somarGrau) {
         }
     }
     grafo->A++; // Incrementar o número de arestas
-    Aresta *novaAresta = (Aresta *) realloc(grafo->arestas,
-                                            grafo->A * sizeof(Aresta)); // Realocar memória para a nova aresta
+    Aresta *novaAresta = (Aresta *) realloc(grafo->arestas, grafo->A * sizeof(Aresta)); // Realocar memória para a nova aresta
     if (novaAresta == NULL) {
         // Tratar a falha de alocação de memória
         return 0;

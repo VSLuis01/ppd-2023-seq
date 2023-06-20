@@ -48,9 +48,13 @@ int main(int argc, char** argv) {
     char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
     int running = 1;
 
-    int numVerticesArg = atoi(argv[1]);
-
-    int numVertices = argc != 2 ? NUM_VERTICES : numVerticesArg == 0 ? NUM_VERTICES : numVerticesArg;
+    int numVertices;
+    if (argc == 2) {
+        int numVerticesArg = atoi(argv[1]);
+        numVertices = numVerticesArg > 0 ? numVerticesArg : NUM_VERTICES;
+    } else {
+        numVertices = NUM_VERTICES;
+    }
 
     Grafo *grafo = inicializaGrafoComVertice(numVertices);
 
@@ -58,7 +62,7 @@ int main(int argc, char** argv) {
 
     Grafo *agm = arvoreGeradoraMinima(grafo);
 
-    sdlInitWindow(1600, 1300);
+    sdlInitWindow(1300, 800);
 
     int renderizarAGM = 0;
     while (running) {
