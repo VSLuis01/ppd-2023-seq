@@ -1,7 +1,7 @@
 #include "graphics/sdl_utils.h"
 #include <stdio.h>
 
-#define NUM_VERTICES 9
+#define NUM_VERTICES 91
 
 
 void printGrafo(Grafo *grafo) {
@@ -58,8 +58,10 @@ int main(int argc, char** argv) {
 
     Grafo *grafo = inicializaGrafoComVertice(numVertices);
 
+
     construirGrafo(grafo, nomeDoArquivo);
 
+//    printGrafo(grafo);
     Grafo *agm = arvoreGeradoraMinima(grafo);
 
     sdlInitWindow(1300, 800);
@@ -88,7 +90,7 @@ int main(int argc, char** argv) {
                 } else if (sdlGetKeyCode() == SDLK_DOWN) {
                     changeSeed(-1);
                 } else if (sdlGetKeyCode() == SDLK_r) {
-                    setSeed(20);
+                    setSeed(16);
                 } else if (sdlGetKeyCode() == SDLK_ESCAPE) {
                     sdlDestroyWindow();
                     running = 0;

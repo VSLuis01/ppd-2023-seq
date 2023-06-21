@@ -13,6 +13,7 @@ typedef struct {
 typedef struct {
     int v;
     int grau;
+    int componente;
 } Vertice;
 
 typedef struct {

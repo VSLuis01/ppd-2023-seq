@@ -216,8 +216,8 @@ void desenharGrafo(Grafo *grafo) {
 
     for (int i = 0; i < grafo->A; ++i) {
         // Gere um raio aleatório para o vértice atual
-        int raioV = (hash(grafo->arestas[i].v) % raioMaximo) + 90;
-        int raioW = (hash(grafo->arestas[i].w) % raioMaximo) + 90;
+        int raioV = (hash(grafo->arestas[i].v) % raioMaximo) + 150;
+        int raioW = (hash(grafo->arestas[i].w) % raioMaximo) + 150;
 
         // Calcule o ângulo de separação entre os vértices
         double anguloSeparacao = 2 * M_PI / grafo->V;

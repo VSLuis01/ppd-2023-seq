@@ -71,11 +71,7 @@ void sdlRenderizarCirculo(SDL_Point pos, int raio, SDL_Colour color, const char*
  */
 void sdlRenderizarLinha(SDL_Point p1, SDL_Point p2, SDL_Colour color, const char* label);
 
-void renderizarForcaDirecionada(Grafo* grafo);
-
 void desenharGrafo(Grafo* grafo);
-
-void renderizarGrafoHierarquico(Grafo* grafo);
 
 void renderizarGrafo(Grafo* grafo, RenderFunction renderFunction);
 
