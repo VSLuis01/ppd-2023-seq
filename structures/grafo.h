@@ -28,7 +28,7 @@ typedef struct {
  * @param grafo
  * @return Arvore geradora minima F (V, E')
  */
-Grafo *arvoreGeradoraMinima(Grafo *grafo);
+Grafo *arvoreGeradoraMinima(Grafo grafo);
 
 /**
  * @brief Inicializa o grafo. Aloca memória para o grafo e para o conjunto de arestas e inicializa o número de vértices e arestas

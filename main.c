@@ -14,9 +14,9 @@ void printGrafo(Grafo *grafo) {
         totalPeso += grafo->arestas[i].peso;
     }
     printf("Peso total: %d\n", totalPeso);
-    for (int i = 0; i < grafo->V; ++i) {
+   /* for (int i = 0; i < grafo->V; ++i) {
         printf("%d - GRAU (%d)\n", grafo->vertices[i].v, grafo->vertices[i].grau);
-    }
+    }*/
 }
 
 /**
@@ -61,8 +61,11 @@ int main(int argc, char** argv) {
 
     construirGrafo(grafo, nomeDoArquivo);
 
-//    printGrafo(grafo);
-    Grafo *agm = arvoreGeradoraMinima(grafo);
+    Grafo *agm = arvoreGeradoraMinima(*grafo);
+    printf("Grafo Original:\n");
+    printGrafo(grafo);
+    printf("Grafo AGM:\n");
+    printGrafo(agm);
 
     sdlInitWindow(1300, 800);
 
@@ -100,11 +103,10 @@ int main(int argc, char** argv) {
         }
     }
 
-
-    deleteGrafo(grafo);
-    grafo = NULL;
     deleteGrafo(agm);
     agm = NULL;
+    deleteGrafo(grafo);
+    grafo = NULL;
 
     return 0;
 }

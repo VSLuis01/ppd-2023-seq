@@ -39,25 +39,26 @@ void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes, int quant
     if (arvoreGM->A == 0) {
         // Atribuir a cada vertice seu componente
         for (int i = 0; i < arvoreGM->V; ++i) {
-            arvoreGM->vertices[i].componente = arvoreGM->vertices[i].v - 1;
-            componentes[i] = arvoreGM->vertices[i].v - 1;
+            int posicao = arvoreGM->vertices[i].v - 1;
+            arvoreGM->vertices[posicao].componente = arvoreGM->vertices[i].v;
+            arvoreGM->vertices[posicao].grau = 0;
+            componentes[posicao] = arvoreGM->vertices[i].v;
         }
-
     } else {
         int j = 0;
 
         memset(componentes, -1, quantComponentes * sizeof(int));
 
         for (int i = 0; i < arvoreGM->A; ++i) {
-            int v = arvoreGM->arestas[i].v;
-            int w = arvoreGM->arestas[i].w;
+            int v = arvoreGM->arestas[i].v - 1;
+            int w = arvoreGM->arestas[i].w - 1;
 
-            int componenteV = arvoreGM->vertices[v - 1].componente;
-            int componenteW = arvoreGM->vertices[w - 1].componente;
+            int componenteV = arvoreGM->vertices[v].componente;
+            int componenteW = arvoreGM->vertices[w].componente;
 
             if (componenteV != componenteW) {
                 if (componenteV < componenteW) {
-                    arvoreGM->vertices[w - 1].componente = componenteV;
+                    arvoreGM->vertices[w].componente = componenteV;
 
                     // Verifica se a componente já nao foi inserida.
                     bool componenteVRepetida = false;
@@ -73,9 +74,8 @@ void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes, int quant
                         j++;
                     }
                 } else {
-
                     // Verifica se a componente já nao foi inserida.
-                    arvoreGM->vertices[v - 1].componente = componenteW;
+                    arvoreGM->vertices[v].componente = componenteW;
 
                     bool componenteWRepetida = false;
                     for (int k = 0; k < j && j < quantComponentes; ++k) {
@@ -100,10 +100,12 @@ void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes, int quant
  * @param grafo
  * @return Arvore geradora minima F (V, E')
  */
-Grafo *arvoreGeradoraMinima(Grafo *grafo) {
+Grafo *arvoreGeradoraMinima(Grafo grafo) {
     // 1. Inicialize uma floresta F para (V, E') onde E' = {}.
-    Grafo *arvoreGeradoraMinima = inicializaGrafoComVertice(grafo->V);
-    memcpy(arvoreGeradoraMinima->vertices, grafo->vertices, grafo->V * sizeof(Vertice));
+    Grafo *arvoreGeradoraMinima = inicializaGrafoComVertice(grafo.V);
+    //Poderia passar o grafo para a função encontrarComponentesConectados para não precisar desse memcpy
+    // Porém o grafo só seria utilizado uma vez, que seria para copiar os vertices, o que nao ia fazer mt sentido.
+    memcpy(arvoreGeradoraMinima->vertices, grafo.vertices, grafo.V * sizeof(Vertice));
 
     bool concluido = false; // 2. concluido := falso
     int iteracoes = 0;
@@ -127,8 +129,8 @@ Grafo *arvoreGeradoraMinima(Grafo *grafo) {
         }
 
         // 6. Para cada aresta uv em E, onde uv estão em diferentes componentes de F, faça:
-        for (int i = 0; i < grafo->A; ++i) {
-            Aresta arestaUV = grafo->arestas[i];
+        for (int i = 0; i < grafo.A; ++i) {
+            Aresta arestaUV = grafo.arestas[i];
             int u = arestaUV.v;
             int v = arestaUV.w;
 
@@ -184,6 +186,19 @@ Grafo *arvoreGeradoraMinima(Grafo *grafo) {
 }
 
 
+int arestasIguais(Aresta a1, Aresta a2) {
+    return (a1.v == a2.v && a1.w == a2.w && a1.peso == a2.peso);
+}
+
+int arestaExiste(Grafo *grafo, Aresta aresta) {
+    for (int i = 0; i < grafo->A; i++) {
+        if (arestasIguais(grafo->arestas[i], aresta)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /**
  * Insere a aresta de forma dinamica.
  * @param grafo
@@ -194,27 +209,31 @@ Grafo *arvoreGeradoraMinima(Grafo *grafo) {
  * @return 1 caso inserido com sucesso, 0 caso contrario
  */
 int inserirAresta(Grafo *grafo, int v, int w, int peso, int somarGrau) {
-    for (int i = 0; i < grafo->A; ++i) {
-        if (grafo->arestas[i].v == v && grafo->arestas[i].w == w && grafo->arestas[i].peso == peso) {
-            // Aresta já existe
-            return 0;
-        }
-    }
-    grafo->A++; // Incrementar o número de arestas
-    Aresta *novaAresta = (Aresta *) realloc(grafo->arestas, grafo->A * sizeof(Aresta)); // Realocar memória para a nova aresta
-    if (novaAresta == NULL) {
-        // Tratar a falha de alocação de memória
+    if (arestaExiste(grafo, (Aresta) {v, w, peso})) {
         return 0;
     }
-    grafo->arestas = novaAresta; // Atribuir a nova memória realocada
-    int posicao = grafo->A - 1; // Posição correta no array de arestas
-    grafo->arestas[posicao].v = v;
-    grafo->arestas[posicao].w = w;
-    grafo->arestas[posicao].peso = peso;
+
+    Aresta *novaAresta = (Aresta *) malloc((grafo->A + 1) * sizeof(Aresta));
+
+
+    if (novaAresta == NULL) {
+        return 0;
+    }
+    Aresta *arestasGrafo = grafo->arestas;
+
+    memcpy(novaAresta, arestasGrafo, (grafo->A) * sizeof(Aresta));
+
+    novaAresta[grafo->A].v = v;
+    novaAresta[grafo->A].w = w;
+    novaAresta[grafo->A].peso = peso;
+    free(arestasGrafo);
+    grafo->arestas = novaAresta;
+    grafo->A++;
     if (somarGrau) {
         grafo->vertices[v - 1].grau++;
         grafo->vertices[w - 1].grau++;
     }
+
     return 1;
 }
 
@@ -226,9 +245,7 @@ int inserirAresta(Grafo *grafo, int v, int w, int peso, int somarGrau) {
  * @param v
  */
 void inserirVerticeDireto(Grafo *grafo, int v) {
-    if (grafo->vertices[v - 1].v == 0) {
-        grafo->vertices[v - 1].v = v;
-    }
+    grafo->vertices[v - 1].v = v;
 }
 
 /**
@@ -284,7 +301,6 @@ Grafo *inicializaGrafoComVertice(int numVertices) {
     grafo->V = numVertices;
     grafo->A = 0;  // Iniciar o número de arestas como 0
     grafo->arestas = NULL; // Inicialmente, não há arestas alocadas
-    grafo->vertices = (Vertice *) calloc(numVertices, sizeof(Vertice));
-
+    grafo->vertices = (Vertice *) malloc((numVertices * sizeof(Vertice)));
     return grafo;
 }
