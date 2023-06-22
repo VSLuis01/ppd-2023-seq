@@ -4,19 +4,21 @@
 #define NUM_VERTICES 91
 
 
-void printGrafo(Grafo *grafo) {
+void printGrafo(Grafo grafo, int exibirVertices) {
     int totalPeso = 0;
-    printf("Número de vértices: %d\n", grafo->V);
-    printf("Número de arestas: %d\n", grafo->A);
+    printf("Número de vértices: %d\n", grafo.V);
+    printf("Número de arestas: %d\n", grafo.A);
     printf("Arestas: \n");
-    for (int i = 0; i < grafo->A; i++) {
-        printf("Aresta %d: %d - %d (peso: %d)\n", i, grafo->arestas[i].v, grafo->arestas[i].w, grafo->arestas[i].peso);
-        totalPeso += grafo->arestas[i].peso;
+    for (int i = 0; i < grafo.A; i++) {
+        printf("Aresta %d: %d - %d (peso: %d)\n", i, grafo.arestas[i].v, grafo.arestas[i].w, grafo.arestas[i].peso);
+        totalPeso += grafo.arestas[i].peso;
     }
     printf("Peso total: %d\n", totalPeso);
-   /* for (int i = 0; i < grafo->V; ++i) {
-        printf("%d - GRAU (%d)\n", grafo->vertices[i].v, grafo->vertices[i].grau);
-    }*/
+    if (exibirVertices == 1) {
+        for (int i = 0; i < grafo.V; ++i) {
+            printf("%d - GRAU (%d)\n", grafo.vertices[i].v, grafo.vertices[i].grau);
+        }
+    }
 }
 
 /**
@@ -49,9 +51,34 @@ int main(int argc, char** argv) {
     int running = 1;
 
     int numVertices;
-    if (argc == 2) {
-        int numVerticesArg = atoi(argv[1]);
-        numVertices = numVerticesArg > 0 ? numVerticesArg : NUM_VERTICES;
+    int printGrafos = 0;
+    int exibirVertices = 0;
+
+    if (argc >= 2) {
+        int argIndex = 1;
+
+        if (argv[argIndex][0] == 'v') {
+            printGrafos = 1;
+            numVertices = NUM_VERTICES;
+
+            if (argv[argIndex][1] == 'v') {
+                exibirVertices = 1;
+            }
+
+            argIndex++;
+        } else {
+            int numVerticesArg = atoi(argv[argIndex]);
+            numVertices = numVerticesArg > 0 ? numVerticesArg : NUM_VERTICES;
+            argIndex++;
+        }
+
+        if (argIndex < argc && argv[argIndex][0] == 'v') {
+            printGrafos = 1;
+
+            if (argv[argIndex][1] == 'v') {
+                exibirVertices = 1;
+            }
+        }
     } else {
         numVertices = NUM_VERTICES;
     }
@@ -62,10 +89,13 @@ int main(int argc, char** argv) {
     construirGrafo(grafo, nomeDoArquivo);
 
     Grafo *agm = arvoreGeradoraMinima(*grafo);
-    printf("Grafo Original:\n");
-    printGrafo(grafo);
-    printf("Grafo AGM:\n");
-    printGrafo(agm);
+
+    if (printGrafos) {
+        printf("Grafo Original:\n");
+        printGrafo(*grafo, exibirVertices);
+        printf("Grafo AGM:\n");
+        printGrafo(*agm, exibirVertices);
+    }
 
     sdlInitWindow(1300, 800);
 
