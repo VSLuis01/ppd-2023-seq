@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 int regraDesempate() {
     return 1;
@@ -34,22 +35,20 @@ bool todosComponentesConectados(Aresta *arestasMenorPeso, const int *componentes
  * @param componentes
  * @param componentes
  */
-void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes, int quantComponentes) {
+void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes) {
     // Caso nao tenha nenhuma aresta na arvore, entao cada vertice é uma componente
     if (arvoreGM->A == 0) {
         // Atribuir a cada vertice seu componente
         for (int i = 0; i < arvoreGM->V; ++i) {
             int posicao = arvoreGM->vertices[i].v - 1;
-            arvoreGM->vertices[posicao].componente = arvoreGM->vertices[i].v;
+            arvoreGM->vertices[posicao].componente = posicao;
             arvoreGM->vertices[posicao].grau = 0;
-            componentes[posicao] = arvoreGM->vertices[i].v;
+            componentes[i] = arvoreGM->vertices[i].componente;
         }
     } else {
         int j = 0;
-
-        memset(componentes, -1, quantComponentes * sizeof(int));
-
-        for (int i = 0; i < arvoreGM->A; ++i) {
+        int quantComponentes = arvoreGM->V - arvoreGM->A;
+        for (int i = 0; i < arvoreGM->A && j < quantComponentes; ++i) {
             int v = arvoreGM->arestas[i].v - 1;
             int w = arvoreGM->arestas[i].w - 1;
 
@@ -60,9 +59,9 @@ void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes, int quant
                 if (componenteV < componenteW) {
                     arvoreGM->vertices[w].componente = componenteV;
 
-                    // Verifica se a componente já nao foi inserida.
+                    // Verifica se a componente já não foi inserida.
                     bool componenteVRepetida = false;
-                    for (int k = 0; k < j && j < quantComponentes; ++k) {
+                    for (int k = 0; k < j; ++k) {
                         if (componentes[k] == componenteV) {
                             componenteVRepetida = true;
                             break;
@@ -74,11 +73,10 @@ void encontrarComponentesConectados(Grafo *arvoreGM, int *componentes, int quant
                         j++;
                     }
                 } else {
-                    // Verifica se a componente já nao foi inserida.
                     arvoreGM->vertices[v].componente = componenteW;
 
                     bool componenteWRepetida = false;
-                    for (int k = 0; k < j && j < quantComponentes; ++k) {
+                    for (int k = 0; k < j; ++k) {
                         if (componentes[k] == componenteW) {
                             componenteWRepetida = true;
                             break;
@@ -112,15 +110,14 @@ Grafo *arvoreGeradoraMinima(Grafo grafo) {
 
     int quantComponentes = arvoreGeradoraMinima->V - arvoreGeradoraMinima->A;
     Aresta arestaMenorPeso[quantComponentes];
-    int *componentes;
+    int *componentes = NULL;
 
     while (!concluido) {
-
         quantComponentes = arvoreGeradoraMinima->V - arvoreGeradoraMinima->A;
 
         componentes = (int *) malloc(quantComponentes * sizeof(int));
         // 4. Encontre os componentes conectados de F e atribua a cada vértice seu componente.
-        encontrarComponentesConectados(arvoreGeradoraMinima, componentes, quantComponentes);
+        encontrarComponentesConectados(arvoreGeradoraMinima, componentes);
 
         // 5. Inicialize a aresta de menor peso para cada componente como "Nenhuma".
         for (int k = 0; k < quantComponentes; ++k) {
@@ -129,7 +126,7 @@ Grafo *arvoreGeradoraMinima(Grafo grafo) {
         }
 
         // 6. Para cada aresta uv em E, onde uv estão em diferentes componentes de F, faça:
-        for (int i = 0; i < grafo.A; ++i) {
+        for (int i = 0; i < grafo.A && quantComponentes > 1; ++i) {
             Aresta arestaUV = grafo.arestas[i];
             int u = arestaUV.v;
             int v = arestaUV.w;
