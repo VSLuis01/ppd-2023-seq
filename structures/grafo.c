@@ -126,7 +126,7 @@ Grafo *arvoreGeradoraMinima(Grafo grafo) {
         }
 
         // 6. Para cada aresta uv em E, onde uv estão em diferentes componentes de F, faça:
-        for (int i = 0; i < grafo.A && quantComponentes > 1; ++i) {
+        for (int i = 0; i < grafo.A; ++i) {
             Aresta arestaUV = grafo.arestas[i];
             int u = arestaUV.v;
             int v = arestaUV.w;
