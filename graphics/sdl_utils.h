@@ -7,10 +7,6 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include "../structures/grafo.h"
-
-// Função de renderização do grafo
-typedef void (*RenderFunction)(Grafo*);
 
 /**
  * @brief Inicializa a janela do SDL (window e renderer)
@@ -71,8 +67,8 @@ void sdlRenderizarCirculo(SDL_Point pos, int raio, SDL_Colour color, const char*
  */
 void sdlRenderizarLinha(SDL_Point p1, SDL_Point p2, SDL_Colour color, const char* label);
 
-void desenharGrafo(Grafo* grafo);
+void desenharGrafoMatrizAdj(int **matrizAdj, int numVertices);
 
-void renderizarGrafo(Grafo* grafo, RenderFunction renderFunction);
+void desenharGrafo(const void* arestas, int numArestas, int numVertices);
 
 #endif //PPD_2023_SEQ_SDL_UTILS_H

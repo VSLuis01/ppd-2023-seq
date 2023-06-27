@@ -1,4 +1,5 @@
 #include "graphics/sdl_utils.h"
+#include "structures/grafo.h"
 #include <stdio.h>
 
 #define NUM_VERTICES 91
@@ -104,9 +105,9 @@ int main(int argc, char** argv) {
         sdlClearRender();
 
         if (renderizarAGM) {
-            renderizarGrafo(agm, desenharGrafo);
+            desenharGrafo(agm->arestas, agm->A, agm->V);
         } else {
-            renderizarGrafo(grafo, desenharGrafo);
+            desenharGrafo(grafo->arestas, grafo->A, grafo->V);
         }
 
         sdlDraw();
