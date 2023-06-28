@@ -291,7 +291,7 @@ void desenharGrafoMatrizAdj(int **matrizAdj, int numVertices) {
 
                 // Desenhar vértice i
                 double anguloI = i * anguloSeparacao;
-                char labelI[10];
+                char labelI[20];
                 sprintf(labelI, "%d", i);
 
                 // Calcule as coordenadas do vértice com base no raio e no ângulo
@@ -300,7 +300,7 @@ void desenharGrafoMatrizAdj(int **matrizAdj, int numVertices) {
 
                 // Desenhar vértice j
                 double anguloJ = j * anguloSeparacao;
-                char labelJ[10];
+                char labelJ[20];
                 sprintf(labelJ, "%d", j);
 
                 // Calcule as coordenadas do vértice com base no raio e no ângulo
