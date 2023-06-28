@@ -104,10 +104,15 @@ int main(int argc, char** argv) {
     while (running) {
         sdlClearRender();
 
-        if (renderizarAGM) {
-            desenharGrafo(agm->arestas, agm->A, agm->V);
+
+        if (!renderizarAGM) {
+            desenharGrafo(grafo->arestas, grafo->A, grafo->V, (SDL_Colour) {200, 200, 200, 255});
         } else {
-            desenharGrafo(grafo->arestas, grafo->A, grafo->V);
+            desenharGrafo(grafo->arestas, grafo->A, grafo->V, (SDL_Colour) {100, 100, 100, 255});
+        }
+
+        if (renderizarAGM) {
+            desenharGrafo(agm->arestas, agm->A, agm->V, (SDL_Colour) {0, 255, 0, 255});
         }
 
         sdlDraw();

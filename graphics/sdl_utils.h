@@ -69,6 +69,6 @@ void sdlRenderizarLinha(SDL_Point p1, SDL_Point p2, SDL_Colour color, const char
 
 void desenharGrafoMatrizAdj(int **matrizAdj, int numVertices);
 
-void desenharGrafo(const void* arestas, int numArestas, int numVertices);
+void desenharGrafo(const void* arestas, int numArestas, int numVertices, SDL_Colour corLinha);
 
 #endif //PPD_2023_SEQ_SDL_UTILS_H
