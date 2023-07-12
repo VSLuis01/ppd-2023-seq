@@ -2,24 +2,21 @@
 #include "structures/grafo.h"
 #include <stdio.h>
 
-#define NUM_VERTICES 91
-
-
-void printGrafo(Grafo grafo, int exibirVertices) {
-    int totalPeso = 0;
-    printf("Número de vértices: %d\n", grafo.V);
-    printf("Número de arestas: %d\n", grafo.A);
+void printGrafo(Grafo grafo) {
+    u_int64_t totalPeso = 0;
+    printf("Número de vértices: %lu\n", grafo.V);
+    printf("Número de arestas: %lu\n", grafo.A);
     printf("Arestas: \n");
-    for (int i = 0; i < grafo.A; i++) {
-        printf("Aresta %d: %d - %d (peso: %d)\n", i, grafo.arestas[i].v, grafo.arestas[i].w, grafo.arestas[i].peso);
+    for (u_int64_t i = 0; i < grafo.A; i++) {
+//        printf("Aresta %d: %d - %d (peso: %d)\n", i, grafo.arestas[i].v, grafo.arestas[i].w, grafo.arestas[i].peso);
         totalPeso += grafo.arestas[i].peso;
     }
-    printf("Peso total: %d\n", totalPeso);
-    if (exibirVertices == 1) {
-        for (int i = 0; i < grafo.V; ++i) {
-            printf("%d - GRAU (%d)\n", grafo.vertices[i].v, grafo.vertices[i].grau);
-        }
-    }
+    printf("Peso total: %lu\n", totalPeso);
+}
+
+void lerQuantidadeVerticeArestas(u_int64_t *vertices, u_int64_t *arestas, FILE *file) {
+    fscanf(file, "%lu", vertices);
+    fscanf(file, "%lu", arestas);
 }
 
 /**
@@ -27,76 +24,47 @@ void printGrafo(Grafo grafo, int exibirVertices) {
  * @param grafo Ponteiro para o ponteiro do grafo
  * @param nomeDoArquivo nome do arquivo de entrada
  */
-void construirGrafo(Grafo *grafo, char *nomeDoArquivo) {
-    FILE *file;
-
-    file = fopen(nomeDoArquivo, "r");
-    if (file == NULL) {
-        printf("Erro ao abrir o arquivo %s\n", nomeDoArquivo);
-        return;
-    }
-
+void construirGrafo(Grafo *grafo, FILE *file) {
     while (!feof(file)) {
-        int v, w, peso;
-        fscanf(file, "%*d %d %d %d", &v, &w, &peso);
+        u_int64_t v, w, peso;
+        fscanf(file, "%lu %lu %lu", &v, &w, &peso);
         inserirVerticeDireto(grafo, v);
         inserirVerticeDireto(grafo, w);
         inserirAresta(grafo, v, w, peso, 1);
     }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     printf("Comandos:\n - Espaço: Mostrar AGM\n - Seta para cima: Aumentar seed\n - Seta para baixo: Diminuir seed\n - R: Resetar seed\n");
 
-    char nomeDoArquivo[] = "dados_entrada_sequencial.txt";
+    FILE *file;
     int running = 1;
 
-    int numVertices;
-    int printGrafos = 0;
-    int exibirVertices = 0;
-
-    if (argc >= 2) {
-        int argIndex = 1;
-
-        if (argv[argIndex][0] == 'v') {
-            printGrafos = 1;
-            numVertices = NUM_VERTICES;
-
-            if (argv[argIndex][1] == 'v') {
-                exibirVertices = 1;
-            }
-
-            argIndex++;
-        } else {
-            int numVerticesArg = atoi(argv[argIndex]);
-            numVertices = numVerticesArg > 0 ? numVerticesArg : NUM_VERTICES;
-            argIndex++;
-        }
-
-        if (argIndex < argc && argv[argIndex][0] == 'v') {
-            printGrafos = 1;
-
-            if (argv[argIndex][1] == 'v') {
-                exibirVertices = 1;
-            }
-        }
-    } else {
-        numVertices = NUM_VERTICES;
+    if (argc != 2) {
+        perror("\n[ERRO] Arquivo nao encontrado.\n");
     }
 
-    Grafo *grafo = inicializaGrafoComVertice(numVertices);
+    u_int64_t numVertices, numArestas;
 
+    file = fopen(argv[1], "r");
 
-    construirGrafo(grafo, nomeDoArquivo);
+    if (file == NULL) {
+        perror("\n[ERRO] Problema na leitura do arquivo\n");
+    }
+
+    lerQuantidadeVerticeArestas(&numVertices, &numArestas, file);
+
+    Grafo *grafo = inicializaGrafoComVertice(numVertices, numArestas);
+
+    construirGrafo(grafo, file);
+
+    fclose(file);
 
     Grafo *agm = arvoreGeradoraMinima(*grafo);
 
-    if (printGrafos) {
-        printf("Grafo Original:\n");
-        printGrafo(*grafo, exibirVertices);
-        printf("Grafo AGM:\n");
-        printGrafo(*agm, exibirVertices);
-    }
+    printf("Grafo AGM:\n");
+    printGrafo(*agm);
+
 
     sdlInitWindow(1300, 800);
 

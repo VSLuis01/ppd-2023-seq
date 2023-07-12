@@ -67,8 +67,7 @@ void sdlRenderizarCirculo(SDL_Point pos, int raio, SDL_Colour color, const char*
  */
 void sdlRenderizarLinha(SDL_Point p1, SDL_Point p2, SDL_Colour color, const char* label);
 
-void desenharGrafoMatrizAdj(int **matrizAdj, int numVertices);
 
-void desenharGrafo(const void* arestas, int numArestas, int numVertices, SDL_Colour corLinha);
+void desenharGrafo(const void* arestas, u_int64_t numArestas, u_int64_t numVertices, SDL_Colour corLinha);
 
 #endif //PPD_2023_SEQ_SDL_UTILS_H

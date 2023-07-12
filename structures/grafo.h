@@ -4,21 +4,24 @@
 
 #ifndef PPD_2023_SEQ_GRAFO_H
 #define PPD_2023_SEQ_GRAFO_H
+
+#include <sys/types.h>
+
 typedef struct {
-    int v; /*Vértice 1*/
-    int w; /*Vértice 2*/
-    int peso;
+    u_int64_t v; /*Vértice 1*/
+    u_int64_t w; /*Vértice 2*/
+    u_int64_t peso;
 } Aresta;
 
 typedef struct {
-    int v;
-    int grau;
-    int componente;
+    u_int64_t v;
+    u_int64_t grau;
+    u_int64_t componente;
 } Vertice;
 
 typedef struct {
-    int V; /*Número de vertices no grafo*/
-    int A; /*Número de arestas no grafo*/
+    u_int64_t V; /*Número de vertices no grafo*/
+    u_int64_t A; /*Número de arestas no grafo*/
     Vertice *vertices; /*Conjunto de vertices*/
     Aresta *arestas; /*Conjunto de arestas*/
 } Grafo;
@@ -41,7 +44,7 @@ Grafo *inicializaGrafo();
  * @param numVertices
  * @return
  */
-Grafo *inicializaGrafoComVertice(int numVertices);
+Grafo *inicializaGrafoComVertice(u_int64_t numVertices, u_int64_t numArestas);
 
 /**
  * Insere a aresta de forma dinamica.
@@ -52,7 +55,7 @@ Grafo *inicializaGrafoComVertice(int numVertices);
  * @param somarGrau flag para somar o grau do vertice
  * @return 1 caso inserido com sucesso, 0 caso contrario
  */
-int inserirAresta(Grafo *grafo, int v, int w, int peso, int somarGrau);
+int inserirAresta(Grafo *grafo, u_int64_t v, u_int64_t w, u_int64_t peso, u_int64_t somarGrau);
 
 /**
  * @brief Insere vertices de forma dinamica.
@@ -62,16 +65,16 @@ int inserirAresta(Grafo *grafo, int v, int w, int peso, int somarGrau);
  * @param v vertice
  * @param w vertice
  */
-void inserirVertice(Grafo *grafo, int v);
+void inserirVertice(Grafo *grafo, u_int64_t v);
 
 /**
  * @brief Insere o vertice diretamente no seu indice,
- * @attention Essa funcao so funciona quando o grafo eh iniciado com a funcao Grafo* inicializaGrafoComVertice(int numVertices);
+ * @attention Essa funcao so funciona quando o grafo eh iniciado com a funcao Grafo* inicializaGrafoComVertice(u_int64_t numVertices);
  * @attention Nessa funcao, os indices do conjunto de vertices sao iguais ao (valor do vertice - 1).
  * @param grafo
  * @param v
  */
-void inserirVerticeDireto(Grafo *grafo, int v);
+void inserirVerticeDireto(Grafo *grafo, u_int64_t v);
 
 /**
  * @brief Libera a memória alocada para o grafo e para o conjunto de arestas
